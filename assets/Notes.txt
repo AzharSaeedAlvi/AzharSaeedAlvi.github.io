@@ -1,0 +1,23 @@
+1. There is some problem in absolute of the cross button  // fixed there was some error in the base 
+2. main.  ===> main class
+3. main# ===> main id 
+4.target="_blank" ---> This opens up the link in a new tab 
+5.Need to Create a Perfil png 
+6. <image class="home__blob-img" x='12' y='18' xlink:href="assets/img/perfil.png" />    // The img inside blob can be moved by varying x and y in this html line 
+7.Transform:TranslateY()    // Not working was fixed by using display: inline-block; 
+8. Inline implies that  the element won't start from the next line and will only take up width that it requires , nothing less , nothing more. 
+9.Whereas block implies that it will start from a new line and will take up the whole width even if it is not utilizing the line. 
+10..qualification__active[data-content]  // In this line active[data-content] shouldn't have space in between.
+11.Transform:TranslateX()    // Not working was fixed by using display: inline-block;
+12.  z-index: var(--z-modal);   //this has to be changed with   z-index: var(--zz-modal);  at 1:21:31
+13.Took help from swiper.js  while making portfolio  //swiper-bundle.min.js , /npm/swiper@9.4.1/swiper-bundle.min.css
+14.if you are unable to move the dots using -->  .swiper-container-horizontal>.swiper-pagination-bullets  then use  .portfolio__container>.swiper-pagination-bullets and it will work .
+15.&#169 -- this is the code for copyright logo.
+16. active scroll and background header stolen from https://github.com/bedimcode/responsive-website-restaurant/blob/main/assets/js/main.js
+17. Initially we set this as a comment to observe and write down the properties shown when it is not active -->
+
+".home__scroll { 
+    display: none;                  
+}"
+
+18.
