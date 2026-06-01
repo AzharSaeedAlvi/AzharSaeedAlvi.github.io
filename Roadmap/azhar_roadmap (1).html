@@ -521,13 +521,13 @@ let checked = {};
 
 async function loadChecked() {
   try {
-    const r = await window.storage.get(STORAGE_KEY);
-    if (r) checked = JSON.parse(r.value);
+   const r = localStorage.getItem(STORAGE_KEY);
+    if (r) checked = JSON.parse(r);
   } catch(e) { checked = {}; }
 }
 
-async function saveChecked() {
-  try { await window.storage.set(STORAGE_KEY, JSON.stringify(checked)); } catch(e) {}
+function saveChecked() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(checked)); } catch(e) {}
 }
 
 function taskId(phaseIdx, secIdx, taskIdx) {
@@ -635,32 +635,13 @@ function showPhase(idx) {
 async function resetAll() {
   if (!confirm('Reset all progress? This cannot be undone.')) return;
   checked = {};
-  try { await window.storage.set(STORAGE_KEY, '{}'); } catch(e) {}
+try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
   renderPhases();
 }
 
-loadChecked().then(renderPhases);
+loadChecked();
+renderPhases();
 
-
-  // Restores the state when the page reloads...
-
-  document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".task").forEach(task => {
-      const saved = localStorage.getItem(task.id);
-        if (saved === "true") {
-            task.classList.add("done");
-
-            const checkbox =
-                task.querySelector('input[type="checkbox"]');
-
-            if (checkbox) {
-                checkbox.checked = true;
-            }
-        }
-
-    });
-
-});
   
 </script>
 </body>
