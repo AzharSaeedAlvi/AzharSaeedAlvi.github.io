@@ -622,6 +622,9 @@ function toggleTask(pi, si, ti, checkbox) {
   badge.textContent = allDone ? '✓ Complete' : 'In progress';
   badge.className = 'section-badge' + (allDone?' done':'');
   updateProgress();
+      
+  localStorage.setItem(task.id, checkbox.checked);
+
 }
 
 function showPhase(idx) {
@@ -639,6 +642,28 @@ async function resetAll() {
 }
 
 loadChecked().then(renderPhases);
+
+
+  // Restores the state when the page reloads...
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".task").forEach(task => {
+      const saved = localStorage.getItem(task.id);
+        if (saved === "true") {
+            task.classList.add("done");
+
+            const checkbox =
+                task.querySelector('input[type="checkbox"]');
+
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+        }
+
+    });
+
+});
+  
 </script>
 </body>
 </html>
