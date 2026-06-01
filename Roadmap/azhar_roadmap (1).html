@@ -623,8 +623,6 @@ function toggleTask(pi, si, ti, checkbox) {
   badge.className = 'section-badge' + (allDone?' done':'');
   updateProgress();
       
-  localStorage.setItem(task.id, checkbox.checked);
-
 }
 
 function showPhase(idx) {
