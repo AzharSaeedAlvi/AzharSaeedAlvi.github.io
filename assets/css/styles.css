@@ -731,7 +731,12 @@
 
     .footer-links a:hover { color: var(--text); }
 
-    /* ── Animations ─────────────────────────────────────────── */
+    /* ── Custom kunai cursor (both themes) ─────────────────── */
+    html *, html *:hover {
+      cursor: none !important;
+    }
+
+/* ── Animations ─────────────────────────────────────────── */
     .fade-in {
       opacity: 0;
       transform: translateY(24px);
