@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<title>Sharingan Theme Toggle — Azhar Saeed Alvi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ===========================================================
+   Sharingan ⇄ Mangekyō theme toggle
+   3-tomoe (Day / Light) → Mangekyō (Night / Dark)
+   Mobile-first, a11y, reduced-motion aware.
+   =========================================================== */
+:root{
+  --stage-day-1:#FDF6E6; --stage-day-2:#F3EBD8;
+  --stage-night-1:#181210; --stage-night-2:#20180F;
+  --ink-day:#2A241D; --ink-night:#EAE3D6;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --tw:280px;  --th:88px;  --thumb:72px;
+  --rest-l:44px;            /* day resting x of the thumb */
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;font-family:"Hanken Grotesk",system-ui,-apple-system,sans-serif;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;
+  color:var(--ink-day);
+  background:radial-gradient(120% 120% at 50% 0%, var(--stage-day-1), var(--stage-day-2));
+  transition:background .7s var(--ease), color .7s var(--ease);
+  -webkit-font-smoothing:antialiased;overflow:hidden;
+}
+body.night{
+  color:var(--ink-night);
+  background:radial-gradient(120% 120% at 50% 0%, var(--stage-night-1), var(--stage-night-2));
+}
+.stage-title{font-size:.82rem;letter-spacing:.32em;text-transform:uppercase;opacity:.55;font-weight:600;margin:0;}
+
+/* ── State words ─────────────────────────────────────────── */
+.state{display:flex;align-items:center;gap:14px;font-weight:700;font-size:.9rem;letter-spacing:.18em;text-transform:uppercase;}
+.state span{transition:opacity .5s var(--ease), transform .5s var(--ease);}
+.state .day{color:#E0900A;}
+.state .night-w{color:#9a8f7e;opacity:.45;}
+body.night .state .day{opacity:.4;}
+body.night .state .night-w{color:#EAE3D6;opacity:1;}
+.state .sep{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.3;}
+
+/* ── Toggle ──────────────────────────────────────────────── */
+.sh-toggle{
+  position:relative;width:var(--tw);height:var(--th);border:0;padding:0;cursor:pointer;
+  border-radius:999px;background:linear-gradient(100deg,#FDF6E6,#F1E7D2);
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,.85),
+    inset 0 -3px 8px rgba(150,120,70,.18),
+    0 18px 40px -14px rgba(120,90,40,.45);
+  transition:background .7s var(--ease), box-shadow .7s var(--ease);
+  -webkit-tap-highlight-color:transparent;outline:none;
+}
+body.night .sh-toggle{
+  background:linear-gradient(100deg,#150E09,#251A11);
+  box-shadow:
+    inset 0 2px 6px rgba(255,236,210,.05),
+    inset 0 -2px 8px rgba(0,0,0,.6),
+    0 0 28px rgba(226,30,37,.30), 0 22px 50px -16px rgba(0,0,0,.85);
+}
+.sh-toggle:focus-visible{outline:3px solid rgba(226,30,37,.5);outline-offset:4px;}
+
+/* flank icons */
+.sh-ic{position:absolute;top:50%;transform:translateY(-50%);width:24px;height:24px;transition:.6s var(--ease);}
+.sh-ic.sun{left:22px;color:#E8920A;filter:drop-shadow(0 0 6px rgba(232,146,10,.6));}
+.sh-ic.moon{right:22px;color:#7c879f;opacity:.5;}
+.sh-ic svg{width:100%;height:100%;display:block;}
+body.night .sh-ic.sun{color:#8a7a66;opacity:.4;filter:none;}
+body.night .sh-ic.moon{color:#F3EBDD;opacity:1;filter:drop-shadow(0 0 7px rgba(243,235,221,.65));}
+
+/* thumb / eye */
+.sh-thumb{
+  position:absolute;top:8px;left:var(--rest-l);width:var(--thumb);height:var(--thumb);
+  transition:left .6s var(--ease), transform .25s var(--ease);
+  will-change:left,transform;
+}
+body.night .sh-thumb{left:calc(var(--tw) - var(--thumb) - var(--rest-l));}
+.sh-toggle:hover .sh-thumb{transform:scale(1.06);}
+.sh-toggle:active .sh-thumb{transform:scale(.95);}
+
+.sh-chakra{position:absolute;inset:-6px;border-radius:50%;pointer-events:none;
+  box-shadow:0 0 12px rgba(226,30,37,.5),0 0 30px rgba(226,30,37,.28);transition:box-shadow .6s var(--ease);}
+body.night .sh-chakra{box-shadow:0 0 16px rgba(226,30,37,.55),0 0 38px rgba(226,30,37,.30);animation:breathe 4s ease-in-out infinite;}
+@keyframes breathe{0%,100%{box-shadow:0 0 12px rgba(226,30,37,.35),0 0 26px rgba(226,30,37,.18);}50%{box-shadow:0 0 22px rgba(226,30,37,.8),0 0 60px rgba(226,30,37,.45);}}
+
+.sh-pulse{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(226,30,37,.7);opacity:0;pointer-events:none;}
+.sh-toggle.awaken .sh-pulse{animation:pulse .7s ease-out;}
+@keyframes pulse{0%{opacity:.8;transform:scale(.7);}100%{opacity:0;transform:scale(2.3);}}
+
+.sh-eye{width:100%;height:100%;display:block;transform-origin:center;filter:drop-shadow(0 0 5px rgba(226,30,37,.5)) drop-shadow(0 3px 7px rgba(0,0,0,.3));transition:filter .3s ease;}
+.sh-toggle.awaken .sh-eye{animation:spin .62s var(--ease);}
+@keyframes spin{0%{transform:rotate(0) scale(1);}55%{transform:rotate(210deg) scale(1.12);}100%{transform:rotate(360deg) scale(1);}}
+
+/* eye internals + the tomoe→mangekyō morph */
+.sh-eye g{transform-box:view-box;transform-origin:50px 50px;}
+.iris-night{opacity:0;transition:opacity .55s var(--ease);}
+body.night .iris-night{opacity:1;}
+@keyframes eyeSpin{to{transform:rotate(360deg);}}
+.sh-tomoe-spin{animation:eyeSpin 3.5s linear infinite;}
+.sh-mang-spin{animation:eyeSpin 11s linear infinite;}
+.sh-toggle:hover .sh-tomoe-spin{animation-duration:.85s;}
+.sh-toggle:hover .sh-mang-spin{animation-duration:3s;}
+.sh-toggle:hover .sh-chakra{box-shadow:0 0 16px rgba(226,30,37,.7),0 0 40px rgba(226,30,37,.42);}
+.sh-toggle:hover .sh-eye{filter:drop-shadow(0 0 9px rgba(226,30,37,.92)) drop-shadow(0 4px 8px rgba(0,0,0,.3));}
+.sh-tomoe{opacity:1;transition:opacity .45s var(--ease), transform .55s var(--ease);}
+body.night .sh-tomoe{opacity:0;transform:scale(.25);}
+.sh-mang{opacity:0;transform:scale(.35);transition:opacity .5s var(--ease), transform .6s var(--ease);}
+body.night .sh-mang{opacity:1;transform:none;}
+.sh-gloss{transition:opacity .5s var(--ease);}
+body.night .sh-gloss{opacity:.4;}
+
+.sh-lid{position:absolute;inset:0;border-radius:50%;background:#0a0a0a;transform:scaleY(0);transform-origin:center;pointer-events:none;}
+.sh-toggle.awaken .sh-lid{animation:blink .42s ease .08s;}
+@keyframes blink{0%{transform:scaleY(0);}45%{transform:scaleY(1);}100%{transform:scaleY(0);}}
+
+.hint{font-size:.8rem;opacity:.5;margin:0;letter-spacing:.02em;}
+
+/* reduced motion: no spin/blink/pulse/breathing; quick, calm state swap */
+@media (prefers-reduced-motion: reduce){
+  body,.sh-toggle,.sh-thumb,.sh-tomoe,.sh-mang,.iris-night,.sh-ic,.state span{transition-duration:.18s;}
+  .sh-toggle.awaken .sh-eye,.sh-toggle.awaken .sh-lid,.sh-toggle.awaken .sh-pulse,body.night .sh-chakra,.sh-tomoe-spin,.sh-mang-spin{animation:none;}
+}
+</style>
+</head>
+<body>
+  <p class="stage-title">Sharingan Theme Toggle</p>
+
+  <div class="state" aria-hidden="true">
+    <span class="day">Day</span>
+    <span class="sep"></span>
+    <span class="night-w">Night</span>
+  </div>
+
+  <button class="sh-toggle" id="shTog" role="switch" aria-checked="false" aria-label="Switch to dark mode">
+    <!-- sun -->
+    <span class="sh-ic sun" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="4.2" fill="currentColor" stroke="none"/>
+        <g><line x1="12" y1="1.5" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22.5"/>
+        <line x1="1.5" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22.5" y2="12"/>
+        <line x1="4.2" y1="4.2" x2="6" y2="6"/><line x1="18" y1="18" x2="19.8" y2="19.8"/>
+        <line x1="19.8" y1="4.2" x2="18" y2="6"/><line x1="6" y1="18" x2="4.2" y2="19.8"/></g>
+      </svg>
+    </span>
+    <!-- moon -->
+    <span class="sh-ic moon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.5 2.5a9.5 9.5 0 1 0 6 16.8A8 8 0 0 1 15.5 2.5Z"/></svg>
+    </span>
+
+    <!-- eye thumb -->
+    <span class="sh-thumb">
+      <span class="sh-chakra"></span>
+      <span class="sh-pulse"></span>
+      <svg class="sh-eye" viewBox="0 0 100 100" aria-hidden="true">
+        <defs>
+          <radialGradient id="irisD" cx="40%" cy="34%" r="78%">
+            <stop offset="0%" stop-color="#ff5a47"/><stop offset="42%" stop-color="#e01e25"/><stop offset="100%" stop-color="#8a0e14"/>
+          </radialGradient>
+          <radialGradient id="irisN" cx="42%" cy="38%" r="80%">
+            <stop offset="0%" stop-color="#3a0809"/><stop offset="55%" stop-color="#1a0305"/><stop offset="100%" stop-color="#070102"/>
+          </radialGradient>
+          <radialGradient id="sclera" cx="50%" cy="40%" r="62%">
+            <stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#ece2cf"/>
+          </radialGradient>
+          <g id="tomoe"><circle cx="50" cy="21.5" r="8"/><path d="M58,19 C66.5,23.5 63.5,34.5 53,37 C57,32 56.5,26.5 49.5,24 Z"/></g>
+          <radialGradient id="mangG" cx="50%" cy="45%" r="66%"><stop offset="0%" stop-color="#f23a2c"/><stop offset="100%" stop-color="#9e0f17"/></radialGradient>
+          <path id="mpetal" d="M50,11 C64,32 64,68 50,89 C36,68 36,32 50,11 Z"/>
+        </defs>
+        <circle cx="50" cy="50" r="47" fill="#150307"/>
+        <circle cx="50" cy="50" r="44" fill="url(#irisD)"/>
+        <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(0,0,0,.16)" stroke-width="1.1"/>
+        <circle class="iris-night" cx="50" cy="50" r="44" fill="url(#irisN)"/>
+        <g class="sh-tomoe" fill="#080808"><g class="sh-tomoe-spin">
+          <use href="#tomoe"/>
+          <use href="#tomoe" transform="rotate(120 50 50)"/>
+          <use href="#tomoe" transform="rotate(240 50 50)"/>
+        </g></g>
+        <g class="sh-mang"><g class="sh-mang-spin">
+          <use href="#mpetal" fill="url(#mangG)" stroke="#0a0a0a" stroke-width="2.4"/>
+          <use href="#mpetal" fill="url(#mangG)" stroke="#0a0a0a" stroke-width="2.4" transform="rotate(60 50 50)"/>
+          <use href="#mpetal" fill="url(#mangG)" stroke="#0a0a0a" stroke-width="2.4" transform="rotate(120 50 50)"/>
+        </g></g>
+        <circle cx="50" cy="50" r="7.5" fill="#060606"/>
+        <g class="sh-gloss"><ellipse cx="39" cy="29" rx="16" ry="9" fill="#ffffff" opacity="0.30"/><circle cx="34" cy="26" r="4.5" fill="#ffffff" opacity="0.55"/></g>
+      </svg>
+      <span class="sh-lid"></span>
+    </span>
+  </button>
+
+  <p class="hint" id="hint">Tap the eye to awaken the Mangekyō</p>
+
+<script>
+(function(){
+  var tog = document.getElementById('shTog');
+  var hint = document.getElementById('hint');
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var busy = false;
+
+  function setNight(on){
+    document.body.classList.toggle('night', on);
+    tog.setAttribute('aria-checked', String(on));
+    tog.setAttribute('aria-label', on ? 'Switch to light mode' : 'Switch to dark mode');
+    if (hint) hint.textContent = on ? 'Mangekyō active — tap to return to Day' : 'Tap the eye to awaken the Mangekyō';
+  }
+
+  tog.addEventListener('click', function(){
+    var goNight = !document.body.classList.contains('night');
+    if (!reduce && !busy){
+      busy = true;
+      tog.classList.remove('awaken'); void tog.offsetWidth; tog.classList.add('awaken');
+      setTimeout(function(){ tog.classList.remove('awaken'); busy = false; }, 760);
+    }
+    setNight(goNight);
+    try { if (navigator.vibrate) navigator.vibrate(15); } catch(e){}
+    try { localStorage.setItem('sh-theme', goNight ? 'night' : 'day'); } catch(e){}
+  });
+
+  try { if (localStorage.getItem('sh-theme') === 'night') setNight(true); } catch(e){}
+})();
+</script>
+</body>
+</html>

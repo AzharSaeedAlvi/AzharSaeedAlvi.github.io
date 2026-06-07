@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Azhar — 18-Month Engineering Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0f14;--bg2:#13161e;--bg3:#1a1e2a;--surface:#1f2433;
+  --border:rgba(255,255,255,0.07);--accent:#4f8ef7;--accent2:#7b5cf0;
+  --text:#e8ecf4;--muted:#8892a4;--green:#34d399;--amber:#f59e0b;--red:#f87171;
+  --font-head:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
+}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.6;font-size:15px;min-height:100vh}
+a{color:var(--accent)}
+.wrap{max-width:960px;margin:0 auto;padding:2rem 1.5rem}
+
+/* Header */
+.header{margin-bottom:2rem}
+.header h1{font-family:var(--font-head);font-size:1.8rem;font-weight:800;letter-spacing:-0.5px;margin-bottom:.25rem}
+.header p{color:var(--muted);font-size:.9rem}
+.progress-bar-wrap{margin-top:1rem}
+.progress-meta{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:.4rem}
+.progress-track{width:100%;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .4s ease}
+
+/* Phase tabs */
+.phase-tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.phase-tab{padding:.4rem .9rem;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:var(--font-body);font-size:.78rem;cursor:pointer;transition:all .15s;white-space:nowrap}
+.phase-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.phase-tab:hover:not(.active){background:var(--bg3);color:var(--text)}
+
+/* Phase panel */
+.phase-panel{display:none}
+.phase-panel.active{display:block}
+.phase-goal{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;font-size:.88rem;color:var(--muted)}
+.phase-goal strong{color:var(--accent);display:block;margin-bottom:.25rem;font-size:.8rem;letter-spacing:.5px;text-transform:uppercase}
+.phase-outcome{display:inline-flex;align-items:center;gap:.4rem;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);color:var(--green);padding:.25rem .75rem;border-radius:100px;font-size:.75rem;margin-top:.5rem}
+
+/* Sections */
+.section{margin-bottom:1rem;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:.875rem 1.125rem;cursor:pointer;background:var(--bg2);transition:background .15s;gap:1rem}
+.section-header:hover{background:var(--bg3)}
+.section-title{font-size:.9rem;font-weight:500;color:var(--text)}
+.section-meta{display:flex;align-items:center;gap:.75rem;flex-shrink:0}
+.section-count{font-size:.75rem;color:var(--muted)}
+.section-badge{font-size:.7rem;padding:.2rem .6rem;border-radius:100px;background:rgba(79,142,247,.12);color:var(--accent);white-space:nowrap}
+.section-badge.done{background:rgba(52,211,153,.12);color:var(--green)}
+.chevron{font-size:.75rem;color:var(--muted);transition:transform .2s}
+.section.open .chevron{transform:rotate(180deg)}
+.section-body{display:none;padding:.75rem 1.125rem;background:var(--bg);border-top:1px solid var(--border)}
+.section.open .section-body{display:block}
+
+/* Tasks */
+.task{display:flex;align-items:flex-start;gap:.75rem;padding:.55rem 0;border-bottom:1px solid var(--border)}
+.task:last-child{border-bottom:none}
+.task input[type=checkbox]{margin-top:3px;width:15px;height:15px;flex-shrink:0;accent-color:var(--accent);cursor:pointer}
+.task-text{font-size:.85rem;color:var(--text);line-height:1.5;transition:color .15s}
+.task.done .task-text{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(255,255,255,.2)}
+.task-tag{display:inline-block;font-size:.68rem;padding:.1rem .5rem;border-radius:4px;margin-right:.4rem;vertical-align:middle}
+.tag-dsa{background:rgba(123,92,240,.15);color:#a78bfa}
+.tag-project{background:rgba(52,211,153,.12);color:var(--green)}
+.tag-aws{background:rgba(245,158,11,.12);color:var(--amber)}
+.tag-career{background:rgba(79,142,247,.12);color:var(--accent)}
+.tag-cs{background:rgba(248,113,113,.1);color:var(--red)}
+.tag-sysdesign{background:rgba(236,72,153,.1);color:#f472b6}
+
+/* Resource card */
+.resource-card{margin-top:1rem;background:var(--bg3);border-radius:8px;padding:.875rem 1rem}
+.resource-card h4{font-size:.75rem;font-weight:500;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+.resource-list{display:flex;flex-wrap:wrap;gap:.4rem}
+.resource-pill{font-size:.75rem;background:var(--bg2);border:1px solid var(--border);color:var(--muted);padding:.25rem .7rem;border-radius:100px}
+
+/* Reset button */
+.reset-btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:var(--font-body);font-size:.75rem;padding:.35rem .8rem;border-radius:6px;cursor:pointer;transition:all .15s}
+.reset-btn:hover{border-color:var(--red);color:var(--red)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
+
+@media(max-width:600px){
+  .phase-tab{font-size:.7rem;padding:.35rem .7rem}
+  .task-text{font-size:.82rem}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="header">
+  <h1>Your 18-Month Roadmap</h1>
+  <p>Step-by-step. Check off as you go. Progress is saved in your browser.</p>
+  <div class="progress-bar-wrap">
+    <div class="progress-meta">
+      <span id="prog-label">0 of 0 steps completed</span>
+      <button class="reset-btn" onclick="resetAll()">Reset all</button>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div class="phase-tabs" role="tablist">
+  <button class="phase-tab active" onclick="showPhase(0)">⚡ Setup Week</button>
+  <button class="phase-tab" onclick="showPhase(1)">Month 1</button>
+  <button class="phase-tab" onclick="showPhase(2)">Month 2</button>
+  <button class="phase-tab" onclick="showPhase(3)">Month 3</button>
+  <button class="phase-tab" onclick="showPhase(4)">Month 4</button>
+  <button class="phase-tab" onclick="showPhase(5)">Months 5–6</button>
+  <button class="phase-tab" onclick="showPhase(6)">Months 7–12</button>
+  <button class="phase-tab" onclick="showPhase(7)">Months 13–18</button>
+</div>
+
+<div id="phases"></div>
+
+</div>
+
+<script>
+const STORAGE_KEY = 'azhar-roadmap-v1';
+
+const phases = [
+{
+  title:"Setup Week — Before Month 1 Begins",
+  goal:"Do these before anything else. Environment, mindset, and the one conversation that matters most.",
+  outcome:"Your workspace is ready. Your manager knows your goal. Your learning has started.",
+  sections:[
+    {
+      title:"Day 1 — Set Up Your Environment",
+      tasks:[
+        {tag:"project",text:"Install Node.js LTS from nodejs.org"},
+        {tag:"project",text:"Install VS Code + extensions: ESLint, Prettier, GitLens, Thunder Client, Docker"},
+        {tag:"career",text:"Set up GitHub profile: professional photo, bio mentioning backend/cloud engineer, pin your best repos"},
+        {tag:"project",text:"Install Docker Desktop and run: docker run hello-world"},
+        {tag:"dsa",text:"Sign up for Neetcode.io (free) — this is your DSA home for 12 months"},
+        {tag:"aws",text:"Create an AWS free tier account at aws.amazon.com — you need this for hands-on practice"},
+        {tag:"career",text:"Set up a Notion workspace (free) for your learning journal — log what you study daily"},
+        {tag:"career",text:"Block 90 minutes in your calendar every single day. Morning or evening — pick one and protect it"}
+      ],
+      resources:["nodejs.org","code.visualstudio.com","neetcode.io","aws.amazon.com","notion.so"]
+    },
+    {
+      title:"Day 2 — Career Foundation",
+      tasks:[
+        {tag:"career",text:"Send a calendar invite to your manager for a 1:1 — subject: 'Career Development Discussion'. Do not delay this."},
+        {tag:"career",text:"Update LinkedIn headline to: 'Sr. Product Consultant @ Cvent | Backend & Cloud Engineer (Transitioning) | Node.js · AWS · Docker | Open to Engineering Roles'"},
+        {tag:"career",text:"Update LinkedIn About section with the rewritten version from our earlier session"},
+        {tag:"career",text:"Enable 'Open to Work' on LinkedIn — recruiters only, not public"},
+        {tag:"career",text:"Search 'Forward Deployed Engineer remote' and 'Integration Engineer remote' on LinkedIn — save 20 companies to a spreadsheet with: Company, Role, URL, Date Applied, Status"}
+      ],
+      resources:["linkedin.com","levels.fyi (for benchmarking salaries)"]
+    },
+    {
+      title:"Day 3 — Learning Begins",
+      tasks:[
+        {tag:"aws",text:"Buy Stephane Maarek's AWS CCP course on Udemy — wait for a sale, max $15. This is your cert blueprint."},
+        {tag:"aws",text:"Watch Section 1 of the AWS CCP course today"},
+        {tag:"dsa",text:"Solve your first LeetCode: Two Sum — neetcode.io/problems/two-integer-sum. Don't look at the solution for 30 minutes minimum."},
+        {tag:"project",text:"Read: What is a webhook? — webhooks.fyi (20 minutes)"},
+        {tag:"cs",text:"Read: How the Node.js event loop works — nodejs.org/en/docs/guides/event-loop-timers-and-nexttick (20 minutes)"},
+        {tag:"project",text:"Create your Integration Pulse GitHub repo — public, add a README with one-line description"}
+      ],
+      resources:["udemy.com (Stephane Maarek – AWS CCP)","webhooks.fyi","nodejs.org/docs"]
+    }
+  ]
+},
+{
+  title:"Month 1 — Foundation",
+  goal:"Build the technical foundation, scaffold Integration Pulse, and attempt the AWS CCP exam by end of month.",
+  outcome:"AWS CCP exam booked. Integration Pulse backend scaffolded locally. Neetcode arrays and two pointers done.",
+  sections:[
+    {
+      title:"Week 1 — Node.js + Express + Arrays DSA",
+      tasks:[
+        {tag:"dsa",text:"Mon: Two Sum, Contains Duplicate (arrays & hashing)"},
+        {tag:"dsa",text:"Tue: Valid Anagram, Group Anagrams"},
+        {tag:"dsa",text:"Wed: Top K Frequent Elements, Encode and Decode Strings"},
+        {tag:"dsa",text:"Thu: Product of Array Except Self, Valid Sudoku"},
+        {tag:"dsa",text:"Fri: Longest Consecutive Sequence. Weekend: redo your 3 weakest problems from scratch."},
+        {tag:"aws",text:"AWS CCP: Complete IAM + EC2 sections this week"},
+        {tag:"project",text:"Design Integration Pulse database schema on paper: tables for users, integrations, sync_events, alerts"},
+        {tag:"project",text:"Initialise Node.js + Express project, set up folder structure (routes, controllers, middleware, models), push to GitHub"},
+        {tag:"cs",text:"Linux: learn core commands daily — ls, cd, pwd, mkdir, rm, cat, grep, find, chmod, ssh"}
+      ],
+      resources:["neetcode.io","expressjs.com/starter/generator.html","The Linux Command Line – Shotts (free at linuxcommand.org)"]
+    },
+    {
+      title:"Week 2 — Database + Auth + Two Pointers DSA",
+      tasks:[
+        {tag:"dsa",text:"Valid Palindrome, Two Sum II, 3Sum, Container With Most Water, Trapping Rain Water"},
+        {tag:"aws",text:"AWS CCP: S3 + RDS + Elastic Load Balancing sections"},
+        {tag:"project",text:"Run PostgreSQL in Docker — docker-compose.yml with Node + Postgres services"},
+        {tag:"project",text:"Install and configure Prisma ORM — define User + Integration + SyncEvent models in schema.prisma"},
+        {tag:"project",text:"Run prisma migrate dev — your schema is now a real database"},
+        {tag:"project",text:"Build JWT auth: POST /auth/register, POST /auth/login, refresh token middleware"},
+        {tag:"project",text:"Write your first protected route — GET /me — verify JWT middleware works"},
+        {tag:"cs",text:"Understand .env files, environment variables, and why secrets never go in Git"}
+      ],
+      resources:["prisma.io/docs","jwt.io/introduction","docker.com/get-started"]
+    },
+    {
+      title:"Week 3 — Job Queue + Sliding Window DSA",
+      tasks:[
+        {tag:"dsa",text:"Best Time to Buy/Sell Stock, Longest Substring Without Repeating Characters"},
+        {tag:"dsa",text:"Longest Repeating Character Replacement, Permutation in String, Minimum Window Substring"},
+        {tag:"aws",text:"AWS CCP: VPC + Route 53 + CloudFront sections"},
+        {tag:"project",text:"Install BullMQ and Redis: npm install bullmq ioredis"},
+        {tag:"project",text:"Create your first Bull queue: IntegrationHealthQueue — job runs every 5 minutes per integration"},
+        {tag:"project",text:"Implement retry logic: 3 retries with exponential backoff"},
+        {tag:"project",text:"Add dead letter queue: failed jobs after max retries go here for manual review"},
+        {tag:"project",text:"Log every job result (success/fail/duration) to the sync_events PostgreSQL table"}
+      ],
+      resources:["docs.bullmq.io","redis.io/docs/getting-started","upstash.com (free Redis for dev)"]
+    },
+    {
+      title:"Week 4 — Review + CCP Exam Booking",
+      tasks:[
+        {tag:"dsa",text:"Stack section: Valid Parentheses, Min Stack, Evaluate Reverse Polish Notation"},
+        {tag:"dsa",text:"Generate Parentheses, Daily Temperatures, Car Fleet, Largest Rectangle in Histogram"},
+        {tag:"dsa",text:"Weekend: redo your 5 weakest problems from all of month 1 without looking at solutions"},
+        {tag:"aws",text:"AWS CCP: finish all remaining sections — Lambda, DynamoDB, CloudWatch, Pricing"},
+        {tag:"aws",text:"Take a practice exam from Tutorials Dojo — score 85%+ before booking the real exam"},
+        {tag:"aws",text:"BOOK YOUR AWS CCP EXAM — pick a date 2-3 weeks from now, lock it in"},
+        {tag:"career",text:"Have the internal transfer conversation if not done yet — this cannot keep slipping"},
+        {tag:"career",text:"Write your first LinkedIn post: 'Here's what I built in Month 1 of my engineering transition' — share your GitHub repo"}
+      ],
+      resources:["tutorialsdojo.com (AWS practice exams)","aws.amazon.com/certification/certified-cloud-practitioner"]
+    }
+  ]
+},
+{
+  title:"Month 2 — Deepen + AWS Certified",
+  goal:"Sit and pass the AWS CCP exam. Build Integration Pulse health intelligence. Start system design study.",
+  outcome:"AWS Cloud Practitioner certified. BullMQ + WebSockets working. System design basics started.",
+  sections:[
+    {
+      title:"Week 5 — Binary Search DSA + AWS exam prep",
+      tasks:[
+        {tag:"dsa",text:"Binary Search: Binary Search, Search a 2D Matrix, Koko Eating Bananas, Search in Rotated Array, Find Min in Rotated Array, Time-Based Key-Value Store, Median of Two Sorted Arrays"},
+        {tag:"aws",text:"Full AWS CCP practice exam day — score 85%+ on two consecutive attempts before sitting"},
+        {tag:"project",text:"Implement WebSocket server with the 'ws' npm package"},
+        {tag:"project",text:"On job completion, broadcast live integration status update to all connected clients"},
+        {tag:"project",text:"Test WebSocket locally with wscat: npm install -g wscat && wscat -c ws://localhost:3000"},
+        {tag:"project",text:"Build integration health scoring: score 0-100 based on success rate over last 24hrs"}
+      ],
+      resources:["ws npm package docs","tutorialsdojo.com practice exams"]
+    },
+    {
+      title:"Week 6 — Linked Lists + System Design begins",
+      tasks:[
+        {tag:"dsa",text:"Linked Lists: Reverse Linked List, Merge Two Sorted Lists, Reorder List, Remove Nth From End, Copy List with Random Pointer, Add Two Numbers, LRU Cache"},
+        {tag:"sysdesign",text:"Buy or borrow: System Design Interview Vol 1 — Alex Xu"},
+        {tag:"sysdesign",text:"Read chapters 1–3 of Alex Xu (scale from zero, back-of-envelope estimation, API design)"},
+        {tag:"sysdesign",text:"Design a URL shortener from scratch on paper — spend 30 min before reading any answer"},
+        {tag:"project",text:"Build Slack webhook alerting: when integration health drops below 70, fire a Slack alert"},
+        {tag:"project",text:"Implement full audit trail: every sync event recorded with timestamp, payload size, status, duration"},
+        {tag:"aws",text:"SIT YOUR AWS CCP EXAM this week or early next week"}
+      ],
+      resources:["System Design Interview Vol 1 – Alex Xu (book)","api.slack.com/messaging/webhooks"]
+    },
+    {
+      title:"Week 7 — Trees DSA + System Design continues",
+      tasks:[
+        {tag:"dsa",text:"Trees: Invert Binary Tree, Max Depth, Diameter, Balanced, Same Tree, Subtree of Another Tree"},
+        {tag:"dsa",text:"LCA of BST, Level Order Traversal, Right Side View, Count Good Nodes, Validate BST, Kth Smallest in BST"},
+        {tag:"sysdesign",text:"Design a rate limiter — draw the architecture, choose an algorithm (token bucket vs sliding window log)"},
+        {tag:"sysdesign",text:"Design a notification system — multi-channel (email, SMS, push), at-least-once delivery"},
+        {tag:"project",text:"Build React frontend skeleton: create-react-app or Vite, set up routing"},
+        {tag:"project",text:"Integration health card component: shows name, status badge, health score, last sync time"},
+        {tag:"project",text:"Connect React to WebSocket — update health card in real-time when worker broadcasts"},
+        {tag:"career",text:"Connect with 10 engineers in FDE or integration engineering roles on LinkedIn this week"}
+      ],
+      resources:["reactjs.org/docs","vitejs.dev","ByteByteGo newsletter (subscribe free)"]
+    },
+    {
+      title:"Week 8 — Celebrate AWS cert + First Applications",
+      tasks:[
+        {tag:"aws",text:"If not sat yet: SIT THE AWS CCP EXAM THIS WEEK. No more delays."},
+        {tag:"dsa",text:"Tries: Implement Trie, Design Add and Search Words Data Structure, Word Search II"},
+        {tag:"sysdesign",text:"Design a key-value store (like Redis) — focus on consistent hashing, replication, eventual consistency"},
+        {tag:"project",text:"Dashboard: alert feed component showing last 10 alerts with timestamps"},
+        {tag:"career",text:"Find 15 FDE and junior engineering job postings — apply to 5 with tailored cover notes (not mass apply)"},
+        {tag:"career",text:"Reach out to 2 people at target companies: 'I noticed you work on X at Y. I'm transitioning into backend/FDE roles and would love 15 min of your perspective.' — direct, brief, respectful"},
+        {tag:"career",text:"Add AWS Cloud Practitioner to LinkedIn Certifications section — include the badge link"},
+        {tag:"career",text:"Update your resume: AWS CCP is now a real credential, not 'learning'"}
+      ],
+      resources:["linkedin.com/in/azharsaeedalvi","credly.com (AWS badge)"]
+    }
+  ]
+},
+{
+  title:"Month 3 — Build Intelligence Layer",
+  goal:"Add AI error diagnosis, alerting, and begin the deployment process. Ramp up applications.",
+  outcome:"AI diagnosis working. Alerts firing. AWS deployment started. 5+ applications per week.",
+  sections:[
+    {
+      title:"Week 9 — Heap/Priority Queue + AI Integration",
+      tasks:[
+        {tag:"dsa",text:"Heap: Kth Largest Element in Array, Last Stone Weight, K Closest Points to Origin, Kth Largest in Stream"},
+        {tag:"dsa",text:"Task Scheduler, Design Twitter, Find Median from Data Stream"},
+        {tag:"project",text:"Sign up for Anthropic API or OpenAI API — get your API key"},
+        {tag:"project",text:"Build POST /integrations/:id/diagnose endpoint — accepts an error log, returns AI explanation + suggested fix"},
+        {tag:"project",text:"Prompt engineer carefully: 'You are an integration debugging assistant. Here is an error log from a SaaS integration. Explain what went wrong in 2 sentences and suggest the most likely fix.'"},
+        {tag:"project",text:"Test with 5 real error log samples — iterate the prompt until outputs are useful"},
+        {tag:"sysdesign",text:"Design a distributed cache (Redis architecture, eviction policies, cache invalidation)"},
+        {tag:"career",text:"5 applications this week — track every one in your spreadsheet with date, role, company, status"}
+      ],
+      resources:["docs.anthropic.com","platform.openai.com/docs","promptingguide.ai"]
+    },
+    {
+      title:"Week 10 — Graphs + Health Scoring Refinement",
+      tasks:[
+        {tag:"dsa",text:"Graphs: Number of Islands, Clone Graph, Max Area of Island, Pacific Atlantic Water Flow, Surrounded Regions, Rotting Oranges"},
+        {tag:"dsa",text:"Course Schedule I & II, Redundant Connection, Word Ladder"},
+        {tag:"project",text:"Refine health scoring: weight recent failures more heavily than old ones (exponential decay)"},
+        {tag:"project",text:"Add configurable alert thresholds per integration: user can set at what score to alert"},
+        {tag:"project",text:"Add Nodemailer email alerts as a second channel alongside Slack"},
+        {tag:"sysdesign",text:"Design YouTube — focus on video storage, CDN architecture, adaptive bitrate streaming"},
+        {tag:"project",text:"Add EXPLAIN ANALYZE to your slowest PostgreSQL queries — add indexes where needed"},
+        {tag:"career",text:"5 applications this week + 1 completed informational chat — report back what you learned"}
+      ],
+      resources:["nodemailer.com","use-the-index-luke.com","postgresql.org/docs/explain"]
+    },
+    {
+      title:"Week 11 — Advanced Graphs + AWS Deployment",
+      tasks:[
+        {tag:"dsa",text:"Advanced Graphs: Reconstruct Itinerary, Min Cost to Connect All Points, Network Delay Time, Swim in Rising Water, Alien Dictionary, Cheapest Flights Within K Stops"},
+        {tag:"aws",text:"Launch an EC2 instance (t2.micro — free tier): SSH into it, install Node.js and Docker"},
+        {tag:"aws",text:"Set up an RDS PostgreSQL instance in the same VPC as your EC2"},
+        {tag:"aws",text:"Set up ElastiCache Redis (or use Upstash free tier for simplicity)"},
+        {tag:"project",text:"Configure Nginx on EC2 as a reverse proxy: requests to port 80 → your Node app on port 3000"},
+        {tag:"project",text:"Set up PM2 to keep Node process alive on EC2: pm2 start index.js --name integration-pulse"},
+        {tag:"sysdesign",text:"Design a web crawler — focus on politeness, deduplication, distributed frontier"},
+        {tag:"career",text:"Register your domain: integrationpulse.dev or similar — Namecheap (~$10/year)"}
+      ],
+      resources:["pm2.keymetrics.io","nginx.org/en/docs/beginners_guide.html","namecheap.com"]
+    },
+    {
+      title:"Week 12 — 1D DP + Full Deployment",
+      tasks:[
+        {tag:"dsa",text:"1D DP: Climbing Stairs, Min Cost Climbing Stairs, House Robber I & II, Longest Palindromic Substring"},
+        {tag:"dsa",text:"Palindromic Substrings, Decode Ways, Coin Change, Maximum Product Subarray, Word Break, Longest Increasing Subsequence"},
+        {tag:"project",text:"Add SSL certificate with Let's Encrypt + Certbot: your app now runs on HTTPS"},
+        {tag:"project",text:"Point your domain DNS to your EC2 IP via Route 53 or Namecheap DNS settings"},
+        {tag:"project",text:"Deploy Integration Pulse — it should now be live at your domain"},
+        {tag:"project",text:"Test everything end to end in production — create a real integration, trigger a failure, verify alert fires"},
+        {tag:"career",text:"POST ON LINKEDIN: 'I just shipped Integration Pulse — here's what it does and how I built it' — include the link"},
+        {tag:"career",text:"Post in r/SideProject on Reddit and relevant Discord servers — be clear about what it does and who it's for"}
+      ],
+      resources:["certbot.eff.org","letsencrypt.org","r/SideProject"]
+    }
+  ]
+},
+{
+  title:"Month 4 — Launch + Real Users",
+  goal:"Get 20+ real users, complete Neetcode 150, intensify interview preparation.",
+  outcome:"20+ users on Integration Pulse. Neetcode 150 complete. Resume bullet updated with real metrics. Mock interviews started.",
+  sections:[
+    {
+      title:"Week 13 — 2D DP + User Acquisition",
+      tasks:[
+        {tag:"dsa",text:"2D DP: Unique Paths, Longest Common Subsequence, Best Time to Buy/Sell with Cooldown, Coin Change II, Target Sum"},
+        {tag:"dsa",text:"Interleaving String, Longest Increasing Path in Matrix, Edit Distance, Burst Balloons"},
+        {tag:"project",text:"DM 10 people directly who might benefit: RevOps folks, technical consultants, startup CTOs on LinkedIn"},
+        {tag:"project",text:"Message format: 'I built a tool that monitors SaaS integration health in real time. Would you try it for free and give me 5 minutes of feedback? [link]' — direct, short, specific"},
+        {tag:"project",text:"Set up basic analytics: track number of integrations monitored, alerts fired, active users (use a simple counter in PostgreSQL or Plausible)"},
+        {tag:"sysdesign",text:"Design a distributed message queue (Kafka) — partitions, consumer groups, at-least-once vs exactly-once delivery"},
+        {tag:"career",text:"10 applications this week — you have a live product with a real URL now. Lead with it."}
+      ],
+      resources:["plausible.io (privacy-friendly analytics)","indiehackers.com (share your project)"]
+    },
+    {
+      title:"Week 14 — Bit Manipulation + Fix Real Bugs",
+      tasks:[
+        {tag:"dsa",text:"Bit Manipulation: Single Number, Number of 1 Bits, Counting Bits, Reverse Bits, Missing Number, Sum of Two Integers, Reverse Integer"},
+        {tag:"project",text:"Fix every bug real users report — treat their feedback as gold"},
+        {tag:"project",text:"Add a user onboarding flow: guided setup for connecting a first integration (step 1, 2, 3 — no blank state)"},
+        {tag:"project",text:"Add integration templates: pre-built configs for common patterns (Salesforce → Cvent, HubSpot → Cvent)"},
+        {tag:"sysdesign",text:"Design a ride-sharing service (Uber) — focus on matching algorithm, location updates, surge pricing"},
+        {tag:"career",text:"DO YOUR FIRST MOCK INTERVIEW on Pramp this week — DSA problem, 30 minutes, with a real partner"},
+        {tag:"career",text:"Write out your 'tell me about yourself' answer — 90 seconds, practice it out loud until it flows naturally"}
+      ],
+      resources:["pramp.com","interviewing.io"]
+    },
+    {
+      title:"Week 15 — Math & Geometry + Interview Prep Intensifies",
+      tasks:[
+        {tag:"dsa",text:"Math & Geometry: Rotate Image, Spiral Matrix, Set Matrix Zeroes, Happy Number, Plus One, Pow(x,n), Multiply Strings, Detect Squares"},
+        {tag:"project",text:"Aim for 15+ users this week — follow up with everyone you messaged in Week 13"},
+        {tag:"cs",text:"Core CS: Read 'Processes' and 'Threads' chapters from OS: Three Easy Pieces (ostep.org — free)"},
+        {tag:"cs",text:"Networking: watch a 30-minute explainer on TCP/IP, HTTP vs HTTPS, and what a DNS lookup actually does"},
+        {tag:"sysdesign",text:"Design a hotel reservation system — focus on double-booking prevention (distributed locking, database transactions)"},
+        {tag:"career",text:"2 mock interviews on Pramp this week — 1 DSA, 1 behavioral"},
+        {tag:"career",text:"Write out all 8-10 STAR behavioral stories. Record yourself on voice memo. Listen back. Are they specific? Do they have a result?"}
+      ],
+      resources:["ostep.org (free OS textbook)","pramp.com","cloudflare.com/learning (great networking explainers)"]
+    },
+    {
+      title:"Week 16 — Neetcode 150 Complete",
+      tasks:[
+        {tag:"dsa",text:"Intervals: Insert Interval, Merge Intervals, Non-overlapping Intervals, Meeting Rooms I & II, Minimum Interval to Include Each Query"},
+        {tag:"dsa",text:"Greedy: Maximum Subarray, Jump Game I & II, Gas Station, Hand of Straights, Merge Triplets, Partition Labels, Valid Parenthesis String"},
+        {tag:"dsa",text:"NEETCODE 150 COMPLETE — redo your 10 all-time weakest problems from scratch this weekend"},
+        {tag:"project",text:"20+ users achieved — update your resume bullet RIGHT NOW with the real number"},
+        {tag:"project",text:"Write the architecture documentation: a README explaining every component, why you made each technical decision, and how it all connects"},
+        {tag:"career",text:"10 applications this week — you now have: AWS cert + live product + 20+ users. This is a real candidate profile."},
+        {tag:"career",text:"Reach out to 3 people at dream companies and ask specifically for a referral — not advice, a referral"},
+        {tag:"career",text:"3 mock interviews this week: 1 DSA, 1 system design, 1 behavioral — aim for this pace from now on"}
+      ],
+      resources:["neetcode.io","interviewing.io","levels.fyi"]
+    }
+  ]
+},
+{
+  title:"Months 5–6 — Active Interviewing",
+  goal:"Interview aggressively. Get your first engineering offer. Complete core CS fundamentals.",
+  outcome:"First engineering or FDE offer received and evaluated. Core CS fundamentals solid.",
+  sections:[
+    {
+      title:"Month 5 — Ramp Everything Up",
+      tasks:[
+        {tag:"career",text:"10 applications per week minimum — track every single one. A spreadsheet is your command center."},
+        {tag:"career",text:"Mock interviews: 3x per week rotating DSA, system design, behavioral. Pramp (free) or interviewing.io (paid, but real FAANG engineers)"},
+        {tag:"dsa",text:"Move beyond Neetcode 150 — start LeetCode medium problems timed. Target: solve in under 25 minutes."},
+        {tag:"cs",text:"Networking deep: TCP vs UDP, HTTP/1.1 vs HTTP/2 vs HTTP/3, TLS handshake step by step, what a load balancer does, CDN architecture"},
+        {tag:"cs",text:"OS: virtual memory, paging, context switching, deadlocks — OS: Three Easy Pieces chapters"},
+        {tag:"sysdesign",text:"2 new system designs per week — design from scratch before reading any answer"},
+        {tag:"project",text:"Start Designing Data-Intensive Applications (DDIA) by Martin Kleppmann — 15-20 pages per day"},
+        {tag:"career",text:"Follow up on every application after 7 days with a brief, polite note: 'I wanted to follow up on my application for X. I'm still very interested and happy to share more about [specific project/experience].'"}
+      ],
+      resources:["DDIA – Martin Kleppmann (book)","interviewing.io","Cloudflare Learning Center"]
+    },
+    {
+      title:"Month 6 — Evaluate and Decide",
+      tasks:[
+        {tag:"career",text:"If you receive an offer: benchmark it on levels.fyi before responding. ALWAYS counter. Even a 10% counter is worth doing."},
+        {tag:"career",text:"Evaluate role type: FDE or junior SWE? Company stage? Tech stack relevance? Growth path to senior? Remote flexibility?"},
+        {tag:"career",text:"If no offers yet: honestly audit — is it the resume, the applications, the interviews, or the target level? Each has a different fix."},
+        {tag:"career",text:"Continue 10 applications/week regardless of pipeline status — keep the funnel full"},
+        {tag:"career",text:"Give Cvent a final decision on internal transfer if still pending — you need clarity to move forward"},
+        {tag:"project",text:"Update Integration Pulse resume bullet with all real numbers accumulated so far: users, integrations monitored, alerts fired"},
+        {tag:"aws",text:"Begin AWS Solutions Architect Associate study — Stephane Maarek on Udemy. Target: sit exam in month 10-11."},
+        {tag:"dsa",text:"Continue daily DSA — 1 medium problem per day minimum, timed"}
+      ],
+      resources:["levels.fyi","Stephane Maarek – AWS SAA (Udemy)","glassdoor.com (offer research)"]
+    }
+  ]
+},
+{
+  title:"Months 7–12 — In Your Engineering Role",
+  goal:"Write production code daily. Learn from a real codebase. Continue building toward FAANG.",
+  outcome:"6+ months engineering experience. AWS SAA certified. Neetcode 300 complete. FAANG network building.",
+  sections:[
+    {
+      title:"First 30 Days in the New Role",
+      tasks:[
+        {tag:"career",text:"Read the entire codebase top-to-bottom in week 1. Understand the architecture before writing a single line."},
+        {tag:"career",text:"Set up your dev environment exactly as the team does — no shortcuts, use the same tools"},
+        {tag:"career",text:"Ask 'why' more than 'how' — understand why technical decisions were made, not just how to implement tasks"},
+        {tag:"career",text:"Pair with a senior engineer as much as possible — this is worth more than any course"},
+        {tag:"career",text:"Keep a daily learning log in Notion: what did I learn today? What didn't I understand? What will I research tonight?"},
+        {tag:"career",text:"Ship something small by week 2 — even a small bug fix. Momentum and visibility matter from day one."},
+        {tag:"career",text:"Set up regular 1:1s with your manager and ask for feedback explicitly — don't wait for a performance review"}
+      ],
+      resources:["Your team's internal docs","'A Philosophy of Software Design' – Ousterhout (great for reading codebases)"]
+    },
+    {
+      title:"Ongoing Monthly Habits (Months 7–12)",
+      tasks:[
+        {tag:"dsa",text:"1 DSA problem per day minimum — move from Neetcode 150 to 300. Start attempting LeetCode hard."},
+        {tag:"project",text:"Finish DDIA by month 9 — this book will change how you think about every system you touch"},
+        {tag:"sysdesign",text:"1 system design per week — focus on distributed systems: consensus, replication, partitioning, CAP theorem"},
+        {tag:"aws",text:"AWS SAA: study from month 8, sit the exam in month 10 or 11"},
+        {tag:"project",text:"Open source: find a repo in your stack (Node.js, Express, PostgreSQL tooling), read issues, submit at least 1 meaningful PR by month 9"},
+        {tag:"career",text:"Build your FAANG referral network: connect with 5 engineers inside FAANG companies per month on LinkedIn"},
+        {tag:"career",text:"Document everything at your new role quarterly: what systems you built, what scale, what you learned — this becomes your next resume update"},
+        {tag:"career",text:"Update your resume every 3 months with real metrics from your engineering role"}
+      ],
+      resources:["DDIA – Kleppmann","Grokking System Design","Hussein Nasser – YouTube","Stephane Maarek – AWS SAA"]
+    }
+  ]
+},
+{
+  title:"Months 13–18 — FAANG Preparation",
+  goal:"Serious FAANG prep with real engineering experience behind you. Apply via referrals.",
+  outcome:"1–2 FAANG offers. Start with Amazon, then Meta and Google.",
+  sections:[
+    {
+      title:"DSA & System Design at FAANG Level",
+      tasks:[
+        {tag:"dsa",text:"Ramp to 2 problems per day — LeetCode hard, timed at 35 minutes, spoken aloud as if in an interview"},
+        {tag:"dsa",text:"Neetcode 400+ complete. Every pattern recognisable cold: DP, graphs, tries, heap, sliding window, backtracking"},
+        {tag:"sysdesign",text:"20+ full systems designed and practiced — go beyond ByteByteGo to primary engineering blogs (Netflix Tech Blog, Uber Engineering, Meta Engineering)"},
+        {tag:"sysdesign",text:"System Design Vol 2 – Alex Xu: read and practice every chapter"},
+        {tag:"sysdesign",text:"Master: consistent hashing, distributed transactions, consensus (Raft, Paxos simplified), time series databases, event sourcing, CQRS"},
+        {tag:"career",text:"Mock interviews 3x per week on interviewing.io — pay for sessions with real FAANG engineers, not just peers. The feedback is irreplaceable."},
+        {tag:"career",text:"Time yourself strictly: DSA in 20-35 min, system design in 45 min. Practice narrating your thought process out loud."}
+      ],
+      resources:["interviewing.io","Elements of Programming Interviews (book)","System Design Interview Vol 2 – Xu","engineering.fb.com","netflixtechblog.com"]
+    },
+    {
+      title:"Behavioral & Application Strategy",
+      tasks:[
+        {tag:"career",text:"Amazon Leadership Principles: write 2–3 STAR stories for each of the 14 LPs. Practice all of them until they come naturally."},
+        {tag:"career",text:"Target order: Amazon first (highest volume, most accessible for non-traditional backgrounds), then Meta, then Google"},
+        {tag:"career",text:"Apply ONLY via referrals — cold applications to FAANG have a very low success rate. One referral changes your odds dramatically."},
+        {tag:"career",text:"Activate your LinkedIn network: message every FAANG engineer you've connected with over the past year. Be specific: 'I'm applying to SDE roles at Amazon. Would you be willing to refer me if you think I'm a fit?'"},
+        {tag:"career",text:"After every FAANG interview: send a follow-up note to your recruiter, ask for specific feedback, and log exactly what you struggled with. Use that to iterate."},
+        {tag:"career",text:"Negotiate every offer: research base, bonus, and RSU vesting on levels.fyi. Counter even if the first offer seems good — FAANG offers always have room."},
+        {tag:"career",text:"Integration Pulse by now should have real users, real metrics, and a polished README. This is your flagship project story in every FAANG behavioral round."}
+      ],
+      resources:["levels.fyi","Amazon Leadership Principles (amazon.jobs)","interviewing.io","glassdoor.com (interview reports from real candidates)"]
+    }
+  ]
+}
+];
+
+let checked = {};
+
+async function loadChecked() {
+  try {
+   const r = localStorage.getItem(STORAGE_KEY);
+    if (r) checked = JSON.parse(r);
+  } catch(e) { checked = {}; }
+}
+
+function saveChecked() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(checked)); } catch(e) {}
+}
+
+function taskId(phaseIdx, secIdx, taskIdx) {
+  return `${phaseIdx}-${secIdx}-${taskIdx}`;
+}
+
+function updateProgress() {
+  let total = 0, done = 0;
+  phases.forEach((ph, pi) => ph.sections.forEach((sec, si) => sec.tasks.forEach((_, ti) => {
+    total++;
+    if (checked[taskId(pi,si,ti)]) done++;
+  })));
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('prog-label').textContent = `${done} of ${total} steps completed (${pct}%)`;
+}
+
+function sectionDoneCount(phaseIdx, secIdx) {
+  const sec = phases[phaseIdx].sections[secIdx];
+  return sec.tasks.filter((_,ti) => checked[taskId(phaseIdx,secIdx,ti)]).length;
+}
+
+function renderPhases() {
+  const container = document.getElementById('phases');
+  container.innerHTML = '';
+  phases.forEach((ph, pi) => {
+    const panel = document.createElement('div');
+    panel.className = 'phase-panel' + (pi===0?' active':'');
+    panel.id = 'phase-'+pi;
+
+    let html = `<div class="phase-goal"><strong>Goal</strong>${ph.goal}<br><span class="phase-outcome">✓ ${ph.outcome}</span></div>`;
+
+    ph.sections.forEach((sec, si) => {
+      const doneCount = sectionDoneCount(pi, si);
+      const total = sec.tasks.length;
+      const allDone = doneCount === total;
+      html += `<div class="section" id="sec-${pi}-${si}">
+        <div class="section-header" onclick="toggleSection(${pi},${si})">
+          <span class="section-title">${sec.title}</span>
+          <span class="section-meta">
+            <span class="section-count">${doneCount}/${total}</span>
+            <span class="section-badge ${allDone?'done':''}">${allDone?'✓ Complete':'In progress'}</span>
+            <span class="chevron">▾</span>
+          </span>
+        </div>
+        <div class="section-body">`;
+
+      sec.tasks.forEach((task, ti) => {
+        const id = taskId(pi,si,ti);
+        const isDone = !!checked[id];
+        const tagMap = {dsa:'tag-dsa',project:'tag-project',aws:'tag-aws',career:'tag-career',cs:'tag-cs',sysdesign:'tag-sysdesign'};
+        const tagLabel = {dsa:'DSA',project:'Project',aws:'AWS',career:'Career',cs:'Core CS',sysdesign:'Sys Design'};
+        html += `<div class="task${isDone?' done':''}" id="task-${id}">
+          <input type="checkbox" ${isDone?'checked':''} onchange="toggleTask(${pi},${si},${ti},this)" aria-label="${task.text}"/>
+          <span class="task-text"><span class="task-tag ${tagMap[task.tag]||''}">${tagLabel[task.tag]||''}</span>${task.text}</span>
+        </div>`;
+      });
+
+      if (sec.resources) {
+        html += `<div class="resource-card"><h4>Resources</h4><div class="resource-list">`;
+        sec.resources.forEach(r => { html += `<span class="resource-pill">${r}</span>`; });
+        html += `</div></div>`;
+      }
+
+      html += `</div></div>`;
+    });
+
+    panel.innerHTML = html;
+    container.appendChild(panel);
+  });
+  updateProgress();
+}
+
+function toggleSection(pi, si) {
+  const el = document.getElementById(`sec-${pi}-${si}`);
+  el.classList.toggle('open');
+}
+
+function toggleTask(pi, si, ti, checkbox) {
+  const id = taskId(pi,si,ti);
+  checked[id] = checkbox.checked;
+  const taskEl = document.getElementById('task-'+id);
+  taskEl.classList.toggle('done', checkbox.checked);
+  saveChecked();
+
+  const doneCount = sectionDoneCount(pi,si);
+  const total = phases[pi].sections[si].tasks.length;
+  const allDone = doneCount===total;
+  const sec = document.getElementById(`sec-${pi}-${si}`);
+  sec.querySelector('.section-count').textContent = `${doneCount}/${total}`;
+  const badge = sec.querySelector('.section-badge');
+  badge.textContent = allDone ? '✓ Complete' : 'In progress';
+  badge.className = 'section-badge' + (allDone?' done':'');
+  updateProgress();
+      
+}
+
+function showPhase(idx) {
+  document.querySelectorAll('.phase-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('phase-'+idx).classList.add('active');
+  document.querySelectorAll('.phase-tab')[idx].classList.add('active');
+}
+
+async function resetAll() {
+  if (!confirm('Reset all progress? This cannot be undone.')) return;
+  checked = {};
+try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+  renderPhases();
+}
+
+loadChecked();
+renderPhases();
+
+  
+</script>
+</body>
+</html>

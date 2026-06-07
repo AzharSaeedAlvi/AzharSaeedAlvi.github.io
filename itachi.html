@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Uchiha Itachi</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #000;
+      overflow: hidden;
+      font-family: "Century Gothic", Futura, AppleGothic, sans-serif;
+    }
+
+    canvas { display: block; position: fixed; top: 0; left: 0; }
+
+    #overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 3.5rem;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    #title {
+      color: #cc1111;
+      font-size: clamp(1.6rem, 5vw, 2.8rem);
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      text-shadow: 0 0 18px #cc000099, 0 0 40px #66000066;
+      margin-bottom: 0.35rem;
+    }
+
+    #subtitle {
+      color: #661111;
+      font-size: clamp(0.75rem, 2vw, 1rem);
+      letter-spacing: 0.55em;
+      margin-bottom: 2.2rem;
+      text-shadow: 0 0 12px #440000;
+    }
+
+    #back-btn {
+      pointer-events: all;
+      display: inline-block;
+      background: transparent;
+      border: 1px solid #3a0000;
+      color: #661111;
+      padding: 0.45rem 1.6rem;
+      font-family: inherit;
+      font-size: 0.8rem;
+      letter-spacing: 0.25em;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.3s, color 0.3s, box-shadow 0.3s;
+    }
+
+    #back-btn:hover {
+      border-color: #cc1111;
+      color: #cc1111;
+      box-shadow: 0 0 14px #cc000044;
+    }
+
+    /* Vignette overlay */
+    #vignette {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, #000000cc 100%);
+      pointer-events: none;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <div id="vignette"></div>
+  <div id="overlay">
+    <div id="title">Uchiha Itachi</div>
+    <div id="subtitle">うちはイタチ</div>
+    <a href="index.html" id="back-btn">← Return</a>
+  </div>
+
+  <script src="assets/js/three.min.js"></script>
+  <script>
+    /* ── Scene ── */
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
+
+    const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 100);
+    camera.position.z = 4.2;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    document.body.prepend(renderer.domElement);
+
+    /* ── Draw Sharingan on canvas ── */
+    const SZ = 512;
+    const tc = document.createElement('canvas');
+    tc.width = tc.height = SZ;
+    const ctx = tc.getContext('2d');
+    const C = SZ / 2; // 256
+
+    // Black base
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, SZ, SZ);
+
+    // Red iris with radial gradient
+    const irisGrad = ctx.createRadialGradient(C - 20, C - 30, 15, C, C, 195);
+    irisGrad.addColorStop(0,   '#ff3311');
+    irisGrad.addColorStop(0.35,'#cc0000');
+    irisGrad.addColorStop(0.75,'#880000');
+    irisGrad.addColorStop(1,   '#3a0000');
+    ctx.beginPath();
+    ctx.arc(C, C, 195, 0, Math.PI * 2);
+    ctx.fillStyle = irisGrad;
+    ctx.fill();
+
+    // Outer iris border
+    ctx.beginPath();
+    ctx.arc(C, C, 195, 0, Math.PI * 2);
+    ctx.strokeStyle = '#0d0000';
+    ctx.lineWidth = 14;
+    ctx.stroke();
+
+    // Concentric ring lines
+    [152, 112, 76].forEach(r => {
+      ctx.beginPath();
+      ctx.arc(C, C, r, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(0,0,0,0.55)';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+    });
+
+    /* ── Tomoe (magatama) drawing ── */
+    function drawTomoe(px, py, tailDir) {
+      // tailDir: angle (rad) the tail points away from the circle
+      const r = 21;
+      ctx.save();
+      ctx.translate(px, py);
+      // rotate so that local "up" (-Y) aligns with tailDir
+      ctx.rotate(tailDir - Math.PI / 2);
+      ctx.fillStyle = '#0b0000';
+
+      // Base angles on the circle where the tail meets (bottom of local frame)
+      const a1 = Math.atan2( r * 0.75,  r * 0.38); // ~63°
+      const a2 = Math.atan2( r * 0.75, -r * 0.38); // ~117°
+
+      ctx.beginPath();
+      // Big arc: from a1 counterclockwise all the way around to a2 (the "head" of the comma)
+      ctx.arc(0, 0, r, a1, a2, true);
+      // Tail bezier: from bottom-left, down to tip, back to bottom-right
+      ctx.quadraticCurveTo(-r * 1.1,  r * 2.2,  0,       r * 3.3);
+      ctx.quadraticCurveTo( r * 1.1,  r * 2.2,  r * 0.38, r * 0.75);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // 3 tomoe on the middle ring (r=112), tails pointing CCW tangent
+    const TOMOE_R = 112;
+    for (let i = 0; i < 3; i++) {
+      const posAngle = -Math.PI / 2 + (i * 2 * Math.PI) / 3;
+      const px = C + Math.cos(posAngle) * TOMOE_R;
+      const py = C + Math.sin(posAngle) * TOMOE_R;
+      // Tail points in the CCW tangential direction from position
+      drawTomoe(px, py, posAngle - Math.PI / 2);
+    }
+
+    // Pupil — elongated vertical oval
+    ctx.beginPath();
+    ctx.ellipse(C, C, 32, 48, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#000000';
+    ctx.fill();
+
+    // Tiny pupil highlight
+    ctx.beginPath();
+    ctx.ellipse(C - 7, C - 14, 7, 11, -0.4, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,80,80,0.3)';
+    ctx.fill();
+
+    /* ── Three.js disc (coin) ── */
+    const texture = new THREE.CanvasTexture(tc);
+
+    const geo = new THREE.CylinderGeometry(1.55, 1.55, 0.13, 80);
+    const sideMat = new THREE.MeshStandardMaterial({ color: 0x1a0000, roughness: 0.4, metalness: 0.9 });
+    const faceMat = new THREE.MeshStandardMaterial({ map: texture, roughness: 0.15, metalness: 0.4 });
+
+    const disc = new THREE.Mesh(geo, [sideMat, faceMat, faceMat]);
+    disc.rotation.x = -Math.PI / 2; // top cap faces camera
+    scene.add(disc);
+
+    /* ── Rim glow ring ── */
+    const ringGeo = new THREE.TorusGeometry(1.56, 0.025, 8, 80);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0x880000 });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = -Math.PI / 2;
+    scene.add(ring);
+
+    /* ── Lights ── */
+    scene.add(new THREE.AmbientLight(0x330000, 1.2));
+
+    const keyLight = new THREE.PointLight(0xff2200, 4, 12);
+    keyLight.position.set(0, 0, 3.5);
+    scene.add(keyLight);
+
+    const rimLight = new THREE.PointLight(0x550000, 2, 8);
+    rimLight.position.set(-3, 1.5, -1);
+    scene.add(rimLight);
+
+    /* ── Floating particles ── */
+    const COUNT = 1000;
+    const pos = new Float32Array(COUNT * 3);
+    for (let i = 0; i < COUNT; i++) {
+      pos[i * 3]     = (Math.random() - 0.5) * 22;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 22;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 22;
+    }
+    const pgeo = new THREE.BufferGeometry();
+    pgeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const pmat = new THREE.PointsMaterial({ color: 0x770000, size: 0.025, transparent: true, opacity: 0.55 });
+    const particles = new THREE.Points(pgeo, pmat);
+    scene.add(particles);
+
+    /* ── Resize ── */
+    window.addEventListener('resize', () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+
+    /* ── Animate ── */
+    let t = 0;
+    (function animate() {
+      requestAnimationFrame(animate);
+      t += 0.01;
+
+      disc.rotation.z += 0.004;           // slow spin
+      ring.rotation.z  = disc.rotation.z;
+      disc.position.y  = Math.sin(t * 0.6) * 0.08; // gentle float
+      ring.position.y  = disc.position.y;
+
+      // Light pulse
+      keyLight.intensity = 3.5 + Math.sin(t * 1.2) * 0.6;
+
+      particles.rotation.y += 0.0004;
+      particles.rotation.x += 0.0002;
+
+      renderer.render(scene, camera);
+    })();
+  </script>
+</body>
+</html>

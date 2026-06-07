@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>CE @ Cloudflare — Prep Roadmap · Azhar Saeed Alvi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF6EF;
+    --bg-2:#F2EADC;
+    --ink:#2A241D;
+    --ink-soft:#766B5C;
+    --ink-faint:#A89C89;
+    --card:#FFFFFF;
+    --line:#ECE2D2;
+    --line-strong:#D8CCB8;
+    --accent:#F6821F;
+    --accent-dark:#D2660A;
+    --accent-soft:#FCEBD7;
+    --ok:#3F8F4F;
+    --shadow:0 1px 2px rgba(60,45,25,.04), 0 12px 30px -12px rgba(80,55,20,.16);
+    --serif:"Fraunces", Georgia, "Times New Roman", serif;
+    --sans:"Hanken Grotesk", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:var(--sans);
+    color:var(--ink);
+    background:
+      radial-gradient(1100px 420px at 78% -8%, rgba(246,130,31,.13), transparent 60%),
+      radial-gradient(900px 360px at -5% 4%, rgba(246,130,31,.06), transparent 55%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+    background-attachment:fixed;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:64px;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:radial-gradient(rgba(120,100,70,.10) 1px, transparent 1px);
+    background-size:22px 22px;
+    mask-image:linear-gradient(180deg, rgba(0,0,0,.6), transparent 60%);
+    -webkit-mask-image:linear-gradient(180deg, rgba(0,0,0,.6), transparent 60%);
+  }
+
+  .topline{position:fixed;top:0;left:0;height:4px;width:0%;z-index:50;
+    background:linear-gradient(90deg, var(--accent), var(--accent-dark));
+    transition:width .5s cubic-bezier(.22,.61,.36,1);
+    box-shadow:0 0 12px rgba(246,130,31,.5);}
+
+  .wrap{position:relative;z-index:1;max-width:840px;margin:0 auto;padding:56px 24px 0;}
+
+  header{margin-bottom:34px;}
+  .kicker{font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-dark);margin:0 0 14px;}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.1rem,5.4vw,3.2rem);line-height:1.04;letter-spacing:-.015em;margin:0 0 16px;}
+  h1 em{font-style:italic;color:var(--accent-dark);}
+  .lead{font-size:1.06rem;color:var(--ink-soft);max-width:60ch;margin:0;}
+  .byline{margin-top:18px;font-size:.9rem;color:var(--ink-faint);}
+  .byline b{color:var(--ink-soft);font-weight:600;}
+
+  .progress{
+    margin:30px 0 40px;background:var(--card);border:1px solid var(--line);
+    border-radius:18px;padding:24px 26px;box-shadow:var(--shadow);
+    display:flex;align-items:center;gap:26px;flex-wrap:wrap;
+  }
+  .pct{font-family:var(--serif);font-weight:600;font-size:3rem;line-height:1;letter-spacing:-.02em;min-width:120px;}
+  .pwrap{flex:1;min-width:200px;}
+  .ptrack{height:13px;background:var(--bg-2);border-radius:99px;overflow:hidden;border:1px solid var(--line);}
+  .pbar{height:100%;width:0%;border-radius:99px;
+    background:linear-gradient(90deg, #FFB05A, var(--accent) 55%, var(--accent-dark));
+    transition:width .6s cubic-bezier(.22,.61,.36,1);}
+  .pmeta{display:flex;justify-content:space-between;gap:12px;margin-top:11px;font-size:.86rem;}
+  #count{font-weight:600;color:var(--ink);}
+  #updated{color:var(--ink-faint);}
+
+  .phase{
+    background:var(--card);border:1px solid var(--line);border-radius:18px;
+    padding:26px 26px 12px;margin-bottom:22px;box-shadow:var(--shadow);
+    opacity:0;transform:translateY(14px);
+    animation:rise .65s cubic-bezier(.22,.61,.36,1) forwards;
+  }
+  .phase:nth-child(1){animation-delay:.05s}
+  .phase:nth-child(2){animation-delay:.12s}
+  .phase:nth-child(3){animation-delay:.19s}
+  .phase:nth-child(4){animation-delay:.26s}
+  .phase:nth-child(5){animation-delay:.33s}
+  @keyframes rise{to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.phase{animation:none;opacity:1;transform:none}}
+
+  .phead{display:flex;align-items:flex-start;gap:16px;margin-bottom:8px;}
+  .num{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
+    font-family:var(--serif);font-weight:600;font-size:1.05rem;
+    background:var(--accent-soft);color:var(--accent-dark);border:1px solid #F4D6B0;
+    transition:.3s;}
+  .phase-done .num{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .ptitle{flex:1;}
+  .ptitle h2{font-family:var(--serif);font-weight:600;font-size:1.32rem;letter-spacing:-.01em;margin:2px 0 3px;}
+  .why{font-size:.9rem;color:var(--ink-soft);margin:0;}
+  .phase-count{flex:none;font-size:.8rem;font-weight:600;color:var(--ink-soft);
+    background:var(--bg-2);border:1px solid var(--line);border-radius:99px;padding:4px 11px;
+    white-space:nowrap;margin-top:4px;}
+
+  .tasks{list-style:none;margin:16px 0 0;padding:0;}
+  .task{display:flex;align-items:flex-start;gap:13px;padding:11px 10px;margin:0 -10px;
+    border-radius:11px;cursor:pointer;transition:background .18s;}
+  .task:hover{background:#FBF4E8;}
+  .task input{appearance:none;-webkit-appearance:none;flex:none;margin:1px 0 0;
+    width:22px;height:22px;border:2px solid var(--line-strong);border-radius:7px;
+    background:#fff;cursor:pointer;position:relative;transition:.18s;}
+  .task input:hover{border-color:var(--accent);}
+  .task input:focus-visible{outline:3px solid rgba(246,130,31,.35);outline-offset:2px;}
+  .task input:checked{background:var(--accent);border-color:var(--accent);}
+  .task input:checked::after{content:"";position:absolute;left:6px;top:2px;width:6px;height:11px;
+    border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg);}
+  .txt{flex:1;font-size:.98rem;padding-top:.5px;transition:.2s;}
+  .txt small{display:block;color:var(--ink-faint);font-size:.83rem;margin-top:2px;line-height:1.4;}
+  .task.done .txt{color:var(--ink-faint);text-decoration:line-through;text-decoration-color:var(--line-strong);}
+  .task.done .txt small{text-decoration:none;}
+
+  footer{max-width:840px;margin:30px auto 0;padding:0 24px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .saved{font-size:.83rem;color:var(--ink-faint);max-width:52ch;}
+  .saved b{color:var(--ink-soft);font-weight:600;}
+  #reset{font-family:var(--sans);font-size:.83rem;font-weight:600;color:var(--ink-soft);
+    background:transparent;border:1px solid var(--line-strong);border-radius:99px;
+    padding:8px 16px;cursor:pointer;transition:.18s;}
+  #reset:hover{background:#fff;border-color:var(--accent);color:var(--accent-dark);}
+  .note{max-width:840px;margin:26px auto 0;padding:16px 24px 0;font-size:.82rem;color:var(--ink-faint);
+    border-top:1px solid var(--line);text-align:center;}
+</style>
+</head>
+<body>
+<div class="topline" id="topline"></div>
+
+<div class="wrap">
+  <header>
+    <p class="kicker">Customer Engineer · Cloudflare · Mumbai</p>
+    <h1>From where I am to <em>ready.</em></h1>
+    <p class="lead">My honest path into the Cloudflare Customer Engineer role. Built to be straight about the gaps, and to close them one checkbox at a time. Lean into what I already do well, learn the rest properly, and ship real things on the way.</p>
+    <p class="byline"><b>Azhar Saeed Alvi</b> &nbsp;·&nbsp; the work I'd love to grow into</p>
+  </header>
+
+  <section class="progress" aria-label="Overall progress">
+    <div class="pct" id="pct">0%</div>
+    <div class="pwrap">
+      <div class="ptrack"><div class="pbar" id="bar"></div></div>
+      <div class="pmeta">
+        <span id="count">0 of 0 steps complete</span>
+        <span id="updated">No progress saved yet.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHASE 0 -->
+  <section class="phase">
+    <div class="phead">
+      <div class="num">0</div>
+      <div class="ptitle">
+        <h2>Groundwork</h2>
+        <p class="why">Set the table this week so everything after has somewhere to live.</p>
+      </div>
+      <span class="phase-count">0/6</span>
+    </div>
+    <ul class="tasks">
+      <li><label class="task"><input type="checkbox" data-id="p0-1"><span class="txt">Re-read the job description and list the exact phrases that already match what I do</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p0-2"><span class="txt">Create a free Cloudflare account</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p0-3"><span class="txt">Update my CV to the current, honest version <small>The one that's closest to what I actually do.</small></span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p0-4"><span class="txt">Tune my LinkedIn headline and About toward Customer / Solutions Engineer</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p0-5"><span class="txt">Check that my GitHub and portfolio show the AI projects clearly</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p0-6"><span class="txt">Put this roadmap live on my site and bookmark it</span></label></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 1 -->
+  <section class="phase">
+    <div class="phead">
+      <div class="num">1</div>
+      <div class="ptitle">
+        <h2>Learn how the Internet actually works</h2>
+        <p class="why">Covers the role's core technical-acumen areas: DNS, networking, and security. This is my biggest real gap, so it goes first.</p>
+      </div>
+      <span class="phase-count">0/10</span>
+    </div>
+    <ul class="tasks">
+      <li><label class="task"><input type="checkbox" data-id="p1-1"><span class="txt">Cloudflare Learning Center: What is DNS?</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p1-2"><span class="txt">Learning Center: How a CDN and caching work</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p1-3"><span class="txt">Learning Center: What is SSL / TLS?</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p1-4"><span class="txt">Learning Center: What is a WAF, and what is DDoS mitigation?</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p1-5"><span class="txt">Learning Center: What is Zero Trust / SASE?</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p1-6"><span class="txt">Put a real domain behind Cloudflare <small>Register a cheap one or use a spare.</small></span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p1-7"><span class="txt">Configure DNS records and turn on the proxy + caching</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p1-8"><span class="txt">Write one custom WAF rule and test that it fires</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p1-9"><span class="txt">Install Wrangler and deploy a "Hello World" Worker</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p1-10"><span class="txt">Deploy a Worker that returns JSON from a simple API route</span></label></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 2 -->
+  <section class="phase">
+    <div class="phead">
+      <div class="num">2</div>
+      <div class="ptitle">
+        <h2>Build the flagship: a RAG app on Cloudflare</h2>
+        <p class="why">Hits the strongly-preferred Workers AI / AI Gateway / RAG quals and proves I build, not just talk. This becomes the project I point to.</p>
+      </div>
+      <span class="phase-count">0/8</span>
+    </div>
+    <ul class="tasks">
+      <li><label class="task"><input type="checkbox" data-id="p2-1"><span class="txt">Pick a use case from my own domain <small>e.g. an integration-troubleshooting assistant over iCapture / CRM docs.</small></span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p2-2"><span class="txt">Set up Vectorize and embed the source documents</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p2-3"><span class="txt">Build the Worker that does retrieval and calls Workers AI</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p2-4"><span class="txt">Route the model calls through AI Gateway</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p2-5"><span class="txt">Turn on caching, rate limiting, and request logging in AI Gateway</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p2-6"><span class="txt">Deploy it live and test with real questions</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p2-7"><span class="txt">Write a short build log explaining how it works and what I learned <small>Sharing the work fits their culture and proves it's real.</small></span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p2-8"><span class="txt">Add the project, with a live link, to my portfolio and CV</span></label></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 3 -->
+  <section class="phase">
+    <div class="phead">
+      <div class="num">3</div>
+      <div class="ptitle">
+        <h2>Certify, and learn to speak commercial</h2>
+        <p class="why">A passed cert signals the domain gap is closing. Commercial fluency is how I address the quota / business-value side I haven't lived yet.</p>
+      </div>
+      <span class="phase-count">0/7</span>
+    </div>
+    <ul class="tasks">
+      <li><label class="task"><input type="checkbox" data-id="p3-1"><span class="txt">Check the current Cloudflare Certified Specialist options, cost, and format</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p3-2"><span class="txt">Pick a track (Application Security or Zero Trust) and schedule the exam</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p3-3"><span class="txt">Study for it and pass</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p3-4"><span class="txt">Learn the SaaS metrics: ARR, NRR, churn, expansion, retention</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p3-5"><span class="txt">Learn the basics of value-based selling and the CE/SE role in a deal</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p3-6"><span class="txt">Write three short stories of adoption / retention impact I've driven, in business terms</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p3-7"><span class="txt">Record a 5-minute, customer-style demo of my RAG app</span></label></li>
+    </ul>
+  </section>
+
+  <!-- PHASE 4 -->
+  <section class="phase">
+    <div class="phead">
+      <div class="num">4</div>
+      <div class="ptitle">
+        <h2>Apply, and prepare to interview well</h2>
+        <p class="why">Turn the prep into a real application and confident, honest interviews.</p>
+      </div>
+      <span class="phase-count">0/9</span>
+    </div>
+    <ul class="tasks">
+      <li><label class="task"><input type="checkbox" data-id="p4-1"><span class="txt">Finalize the Cloudflare-targeted CV with the new project</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p4-2"><span class="txt">Finalize the cover letter — swap "willing to learn" for the project I shipped</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p4-3"><span class="txt">Add a clear line about relocating to Mumbai</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p4-4"><span class="txt">Apply to the role</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p4-5"><span class="txt">Prepare STAR answers for the common behavioural questions</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p4-6"><span class="txt">Prepare an honest, confident answer for "you haven't carried a quota yet"</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p4-7"><span class="txt">Do a mock technical discovery + demo with a friend</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p4-8"><span class="txt">Research the team and interviewers on LinkedIn</span></label></li>
+      <li><label class="task"><input type="checkbox" data-id="p4-9"><span class="txt">Send a thoughtful follow-up after applying and after interviews</span></label></li>
+    </ul>
+  </section>
+</div>
+
+<footer>
+  <p class="saved"><b>Your progress is saved automatically</b> in this browser on this device. No account, no server. Clearing your browser data will reset it.</p>
+  <button id="reset" type="button">Reset progress</button>
+</footer>
+
+<p class="note">Private working page · not linked from the main site</p>
+
+<script>
+(function(){
+  var STORAGE_KEY = "cf-ce-roadmap-v1";
+  function load(){
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {checked:{},updatedAt:null}; }
+    catch(e){ return {checked:{},updatedAt:null}; }
+  }
+  function save(s){
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(e){}
+  }
+  var state = load();
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('input[type=checkbox][data-id]'));
+
+  function refresh(){
+    var total = boxes.length, done = 0;
+    boxes.forEach(function(b){ if(b.checked) done++; });
+    var pct = total ? Math.round(done/total*100) : 0;
+    document.getElementById('bar').style.width = pct + '%';
+    document.getElementById('topline').style.width = pct + '%';
+    document.getElementById('pct').textContent = pct + '%';
+    document.getElementById('count').textContent = done + ' of ' + total + ' steps complete';
+
+    document.querySelectorAll('.phase').forEach(function(ph){
+      var pb = Array.prototype.slice.call(ph.querySelectorAll('input[type=checkbox]'));
+      var d = 0; pb.forEach(function(b){ if(b.checked) d++; });
+      var c = ph.querySelector('.phase-count');
+      if(c){ c.textContent = d + '/' + pb.length; }
+      ph.classList.toggle('phase-done', pb.length > 0 && d === pb.length);
+    });
+  }
+  function refreshTimestamp(){
+    var el = document.getElementById('updated');
+    if(state.updatedAt){
+      var dt = new Date(state.updatedAt);
+      el.textContent = 'Updated ' + dt.toLocaleDateString(undefined,{day:'numeric',month:'short'}) +
+        ', ' + dt.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
+    } else {
+      el.textContent = 'No progress saved yet.';
+    }
+  }
+  function applyState(){
+    boxes.forEach(function(b){
+      b.checked = !!state.checked[b.dataset.id];
+      b.closest('.task').classList.toggle('done', b.checked);
+    });
+    refresh();
+    refreshTimestamp();
+  }
+
+  boxes.forEach(function(b){
+    b.addEventListener('change', function(){
+      if(b.checked){ state.checked[b.dataset.id] = true; }
+      else { delete state.checked[b.dataset.id]; }
+      state.updatedAt = new Date().toISOString();
+      save(state);
+      b.closest('.task').classList.toggle('done', b.checked);
+      refresh();
+      refreshTimestamp();
+    });
+  });
+
+  document.getElementById('reset').addEventListener('click', function(){
+    if(confirm('Reset all progress? This clears every checkmark on this device.')){
+      state = {checked:{}, updatedAt:null};
+      save(state);
+      applyState();
+    }
+  });
+
+  applyState();
+})();
+</script>
+</body>
+</html>
