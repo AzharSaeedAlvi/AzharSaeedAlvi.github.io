@@ -1,0 +1,6 @@
+# Local helper docs — not part of the deployed site
+2026-06-07-portfolio-handoff-prompt.md
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db

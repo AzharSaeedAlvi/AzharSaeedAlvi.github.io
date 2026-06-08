@@ -174,8 +174,7 @@ nav.scrolled{border-bottom-color:var(--line);}
 @keyframes shSpin{0%{transform:rotate(0) scale(1);}55%{transform:rotate(210deg) scale(1.12);}100%{transform:rotate(360deg) scale(1);}}
 .sh-eye g{transform-box:view-box;transform-origin:50px 50px;}
 @keyframes shEyeSpin{to{transform:rotate(360deg);}}
-.sh-tomoe-spin{animation:shEyeSpin 3.5s linear infinite;}
-.sh-mang-spin{animation:shEyeSpin 11s linear infinite;}
+/* idle rotation uses SVG <animateTransform> in index.html — reliable on mobile Safari */
 .sh-toggle:hover .sh-tomoe-spin{animation-duration:.85s;}
 .sh-toggle:hover .sh-mang-spin{animation-duration:3s;}
 .sh-toggle:hover .sh-chakra{box-shadow:0 0 13px rgba(226,30,37,.75),0 0 32px rgba(226,30,37,.42);}
@@ -452,4 +451,6 @@ footer{border-top:1px solid var(--line);padding:2.4rem 0;position:relative;z-ind
   .wd-day{left:12px;}
   .wd-night{right:12px;}
   .hero-meta{gap:.8rem;}
+  .flow-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .flow-svg{min-width:600px;}
 }
